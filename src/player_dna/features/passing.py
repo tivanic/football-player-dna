@@ -160,6 +160,7 @@ def build_passing_features(events: pd.DataFrame) -> pd.DataFrame:
         .agg(
             pass_attempts=("id", "size"),
             completed_passes=("completed", "sum"),
+            total_pass_length=("pass.length", "sum"),
             average_pass_length=("pass.length", "mean"),
             forward_passes=("forward", "sum"),
             progressive_passes=("progressive", "sum"),
@@ -172,6 +173,7 @@ def build_passing_features(events: pd.DataFrame) -> pd.DataFrame:
             through_balls=("through_ball", "sum"),
             shot_assists=("shot_assist", "sum"),
             goal_assists=("goal_assist", "sum"),
+            
         )
         .reset_index()
     )

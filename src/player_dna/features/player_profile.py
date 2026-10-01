@@ -4,6 +4,7 @@ import pandas as pd
 
 from player_dna.features.minutes import build_player_minutes
 from player_dna.features.passing import build_passing_features
+from player_dna.features.positions import build_player_positions
 
 
 PER_90_COLUMNS = [
@@ -32,8 +33,20 @@ def build_player_profile(events: pd.DataFrame) -> pd.DataFrame:
     minutes = build_player_minutes(events)
     passing = build_passing_features(events)
 
+    positions = build_player_positions(events)
+
     profile = minutes.merge(
         passing,
+        on=[
+            "player.id",
+            "player.name",
+            "team.name",
+        ],
+        how="left",
+    )
+
+    profile = profile.merge(
+        positions,
         on=[
             "player.id",
             "player.name",
