@@ -10,11 +10,16 @@ from player_dna.features.player_profile import build_player_profile
 
 
 
-COMPETITION_ID = 9
-SEASON_ID = 281
+# COMPETITION_ID = 9
+# SEASON_ID = 281
+COMPETITION_ID = 43
+SEASON_ID = 106
 
+# OUTPUT_PATH = Path(
+#     "data/processed/bundesliga_2023_2024_player_profiles.parquet"
+# )
 OUTPUT_PATH = Path(
-    "data/processed/bundesliga_2023_2024_player_profiles.parquet"
+    "data/processed/world_cup_2022_player_profiles.parquet"
 )
 
 
@@ -92,7 +97,7 @@ def main() -> None:
     print(
         player_profiles[
             (
-            player_profiles["minutes_played"] >= 450
+            player_profiles["minutes_played"] >= 180
             )
             & (
                 player_profiles["position_group"] == "DM_CM"
