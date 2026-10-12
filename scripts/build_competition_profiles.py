@@ -21,7 +21,9 @@ SEASON_ID = 106
 OUTPUT_PATH = Path(
     "data/processed/world_cup_2022_player_profiles.parquet"
 )
-
+MATCH_OUTPUT_PATH = Path(
+    "data/processed/world_cup_2022_match_profiles.parquet"
+)
 
 def main() -> None:
     matches = load_matches(
@@ -50,12 +52,34 @@ def main() -> None:
 
         profile["match_id"] = match_id
 
+        profile["match_date"] = getattr(
+            match,
+            "match_date",
+            None,
+        )
+
         match_profiles.append(profile)
 
     all_match_profiles = pd.concat(
         match_profiles,
         ignore_index=True,
     )
+    #!
+    MATCH_OUTPUT_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    all_match_profiles.to_parquet(
+        MATCH_OUTPUT_PATH,
+        index=False,
+    )
+
+    print(
+        f"Saved {len(all_match_profiles)} match-level "
+        f"player profiles to {MATCH_OUTPUT_PATH}"
+    )
+    #!
 
     player_profiles = aggregate_player_profiles(
         all_match_profiles
