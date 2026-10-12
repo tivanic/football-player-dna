@@ -8,6 +8,9 @@ from player_dna.features.positions import build_player_positions
 from player_dna.features.possession import (
     build_possession_features,
 )
+from player_dna.features.defending import (
+    build_defending_features,
+)
 
 
 PER_90_COLUMNS = [
@@ -38,6 +41,20 @@ PER_90_COLUMNS = [
     "incomplete_ball_receipts",
     "dispossessed",
     "miscontrols",
+
+    # Defending
+    "pressures",
+    "ball_recoveries",
+    "successful_recoveries",
+    "offensive_recoveries",
+    "tackles",
+    "successful_tackles",
+    "aerial_duels_lost",
+    "interceptions",
+    "successful_interceptions",
+    "blocks",
+    "dribbled_past",
+    "fouls_committed",
 ]
 
 
@@ -53,6 +70,8 @@ def build_player_profile(events: pd.DataFrame) -> pd.DataFrame:
     positions = build_player_positions(events)
 
     possession = build_possession_features(events)
+
+    defending = build_defending_features(events)
 
     profile = minutes.merge(
         passing,
@@ -84,22 +103,48 @@ def build_player_profile(events: pd.DataFrame) -> pd.DataFrame:
         how="left",
     )
 
-    # Players who did not attempt a pass will have missing
-    # passing values after the merge.
-    numeric_passing_columns = [
-        column
-        for column in passing.columns
-        if column not in {
+    profile = profile.merge(
+        defending,
+        on=[
             "player.id",
             "player.name",
             "team.name",
-        }
+        ],
+        how="left",
+    )
+
+    # Players who did not attempt a pass will have missing
+    # passing values after the merge.
+    # numeric_passing_columns = [
+    #     column
+    #     for column in passing.columns
+    #     if column not in {
+    #         "player.id",
+    #         "player.name",
+    #         "team.name",
+    #     }
+    # ]
+
+    # profile[numeric_passing_columns] = (
+    #     profile[numeric_passing_columns]
+    #     .fillna(0)
+    # )
+    ###
+    ###
+    #!
+    count_columns = [
+        column
+        for column in PER_90_COLUMNS
+        if column in profile.columns
     ]
 
-    profile[numeric_passing_columns] = (
-        profile[numeric_passing_columns]
+    profile[count_columns] = (
+        profile[count_columns]
         .fillna(0)
     )
+    #!
+    
+    ###
 
     for column in PER_90_COLUMNS:
         profile[f"{column}_per90"] = (

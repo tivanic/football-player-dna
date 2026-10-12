@@ -45,6 +45,20 @@ COUNT_COLUMNS = [
     "incomplete_ball_receipts",
     "dispossessed",
     "miscontrols",
+
+    # Defending
+    "pressures",
+    "ball_recoveries",
+    "successful_recoveries",
+    "offensive_recoveries",
+    "tackles",
+    "successful_tackles",
+    "aerial_duels_lost",
+    "interceptions",
+    "successful_interceptions",
+    "blocks",
+    "dribbled_past",
+    "fouls_committed",
 ]
 
 def aggregate_player_profiles(
@@ -157,6 +171,18 @@ def aggregate_player_profiles(
         profiles["total_carry_distance"]
         * 90
         / profiles["minutes_played"]
+    )
+    
+    profiles["tackle_success_pct"] = (
+        profiles["successful_tackles"]
+        / profiles["tackles"]
+        * 100
+    )
+
+    profiles["interception_success_pct"] = (
+        profiles["successful_interceptions"]
+        / profiles["interceptions"]
+        * 100
     )
     #
     profiles = profiles.merge(

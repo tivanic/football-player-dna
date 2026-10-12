@@ -30,6 +30,16 @@ PLAYER_DNA_FEATURES = [
     "successful_dribbles_per90",
     "dispossessed_per90",
     "miscontrols_per90",
+
+    # Defending
+    "pressures_per90",
+    "ball_recoveries_per90",
+    "tackles_per90",
+    "successful_tackles_per90",
+    "interceptions_per90",
+    "blocks_per90",
+    "dribbled_past_per90",
+    "fouls_committed_per90",
 ]
 
 
