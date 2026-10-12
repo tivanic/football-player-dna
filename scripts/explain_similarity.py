@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
 from player_dna.model.similarity import PASSING_DNA_FEATURES
+from player_dna.model.similarity import PLAYER_DNA_FEATURES
 
 
 DATA_PATH = Path(
@@ -31,7 +32,7 @@ def main() -> None:
     ].copy()
 
     features = candidates[
-        PASSING_DNA_FEATURES
+        PLAYER_DNA_FEATURES
     ].astype(float)
 
     features = features.fillna(
@@ -44,7 +45,7 @@ def main() -> None:
 
     scaled_df = pd.DataFrame(
         scaled,
-        columns=PASSING_DNA_FEATURES,
+        columns=PLAYER_DNA_FEATURES,
         index=candidates.index,
     )
 
@@ -58,7 +59,7 @@ def main() -> None:
 
     rows = []
 
-    for feature in PASSING_DNA_FEATURES:
+    for feature in PLAYER_DNA_FEATURES:
         target_raw = candidates.loc[
             target_index,
             feature,

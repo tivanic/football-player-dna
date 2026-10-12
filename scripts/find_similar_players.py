@@ -2,8 +2,13 @@ from pathlib import Path
 
 import pandas as pd
 
+# from player_dna.model.similarity import (
+#     PASSING_DNA_FEATURES,
+#     find_similar_players,
+# )
+
 from player_dna.model.similarity import (
-    PASSING_DNA_FEATURES,
+    PLAYER_DNA_FEATURES,
     find_similar_players,
 )
 
@@ -40,10 +45,11 @@ def main() -> None:
         f"{target['minutes_played']:.1f}"
     )
 
-    print("\nPASSING FEATURES")
+    print("\nPLAYER DNA FEATURES")
     print("----------------")
 
-    for feature in PASSING_DNA_FEATURES:
+    # for feature in PASSING_DNA_FEATURES:
+    for feature in PLAYER_DNA_FEATURES:
         print(
             f"{feature:35s} "
             f"{target[feature]:.2f}"

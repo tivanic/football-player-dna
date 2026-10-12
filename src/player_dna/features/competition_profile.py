@@ -3,7 +3,23 @@ from __future__ import annotations
 import pandas as pd
 from player_dna.features.positions import add_position_group
 
+# COUNT_COLUMNS = [
+#     "pass_attempts",
+#     "completed_passes",
+#     "forward_passes",
+#     "progressive_passes",
+#     "final_third_entries",
+#     "passes_into_box",
+#     "under_pressure_passes",
+#     "open_play_passes",
+#     "crosses",
+#     "switches",
+#     "through_balls",
+#     "shot_assists",
+#     "goal_assists",
+# ]
 COUNT_COLUMNS = [
+    # Passing
     "pass_attempts",
     "completed_passes",
     "forward_passes",
@@ -17,8 +33,19 @@ COUNT_COLUMNS = [
     "through_balls",
     "shot_assists",
     "goal_assists",
-]
 
+    # Possession
+    "carries",
+    "progressive_carries",
+    "carries_into_final_third",
+    "carries_into_box",
+    "dribbles",
+    "successful_dribbles",
+    "ball_receipts",
+    "incomplete_ball_receipts",
+    "dispossessed",
+    "miscontrols",
+]
 
 def aggregate_player_profiles(
     match_profiles: pd.DataFrame,
@@ -71,6 +98,7 @@ def aggregate_player_profiles(
         "match_id": "nunique",
         "minutes_played": "sum",
         "total_pass_length": "sum",
+        "total_carry_distance": "sum",
     }
 
     for column in COUNT_COLUMNS:
@@ -113,6 +141,22 @@ def aggregate_player_profiles(
     profiles["average_pass_length"] = (
         profiles["total_pass_length"]
         / profiles["pass_attempts"]
+    )
+    #
+    profiles["average_carry_length"] = (
+        profiles["total_carry_distance"]
+        / profiles["carries"]
+    )
+    profiles["successful_dribble_pct"] = (
+        profiles["successful_dribbles"]
+        / profiles["dribbles"]
+        * 100
+    )
+    #
+    profiles["total_carry_distance_per90"] = (
+        profiles["total_carry_distance"]
+        * 90
+        / profiles["minutes_played"]
     )
     #
     profiles = profiles.merge(

@@ -5,9 +5,13 @@ import pandas as pd
 from player_dna.features.minutes import build_player_minutes
 from player_dna.features.passing import build_passing_features
 from player_dna.features.positions import build_player_positions
+from player_dna.features.possession import (
+    build_possession_features,
+)
 
 
 PER_90_COLUMNS = [
+    # Passing
     "pass_attempts",
     "completed_passes",
     "forward_passes",
@@ -21,6 +25,19 @@ PER_90_COLUMNS = [
     "through_balls",
     "shot_assists",
     "goal_assists",
+
+    # Possession
+    "carries",
+    "total_carry_distance",
+    "progressive_carries",
+    "carries_into_final_third",
+    "carries_into_box",
+    "dribbles",
+    "successful_dribbles",
+    "ball_receipts",
+    "incomplete_ball_receipts",
+    "dispossessed",
+    "miscontrols",
 ]
 
 
@@ -35,6 +52,8 @@ def build_player_profile(events: pd.DataFrame) -> pd.DataFrame:
 
     positions = build_player_positions(events)
 
+    possession = build_possession_features(events)
+
     profile = minutes.merge(
         passing,
         on=[
@@ -47,6 +66,16 @@ def build_player_profile(events: pd.DataFrame) -> pd.DataFrame:
 
     profile = profile.merge(
         positions,
+        on=[
+            "player.id",
+            "player.name",
+            "team.name",
+        ],
+        how="left",
+    )
+
+    profile = profile.merge(
+        possession,
         on=[
             "player.id",
             "player.name",

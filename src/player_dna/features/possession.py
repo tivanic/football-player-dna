@@ -271,4 +271,8 @@ def build_possession_features(
         np.nan,
     )
 
+    features["total_carry_distance"] = (
+        features["total_carry_distance"]
+        .fillna(0)
+    )
     return features

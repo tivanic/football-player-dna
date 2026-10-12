@@ -5,7 +5,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import StandardScaler
 
 
-PASSING_DNA_FEATURES = [
+PLAYER_DNA_FEATURES = [
+    # Passing
     "pass_attempts_per90",
     "pass_completion_pct",
     "average_pass_length",
@@ -17,6 +18,18 @@ PASSING_DNA_FEATURES = [
     "switches_per90",
     "through_balls_per90",
     "shot_assists_per90",
+
+    # Possession
+    "carries_per90",
+    "total_carry_distance_per90",
+    "average_carry_length",
+    "progressive_carries_per90",
+    "carries_into_final_third_per90",
+    "carries_into_box_per90",
+    "dribbles_per90",
+    "successful_dribbles_per90",
+    "dispossessed_per90",
+    "miscontrols_per90",
 ]
 
 
@@ -58,7 +71,7 @@ def find_similar_players(
     candidates = candidates.reset_index(drop=True)
 
     features = candidates[
-        PASSING_DNA_FEATURES
+        PLAYER_DNA_FEATURES
     ].astype(float)
 
     # Defensive fallback in case a feature contains missing values.

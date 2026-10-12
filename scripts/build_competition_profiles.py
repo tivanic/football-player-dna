@@ -92,6 +92,13 @@ def main() -> None:
         "progressive_passes_per90",
         "final_third_entries_per90",
         "passes_into_box_per90",
+        
+        "carries_per90",
+        "total_carry_distance_per90",
+        "average_carry_length",
+        "progressive_carries_per90",
+        "dribbles_per90",
+        "dispossessed_per90",
     ]
 
     print(
