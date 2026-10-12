@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
+
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import StandardScaler
 
 
-PLAYER_DNA_FEATURES = [
-    # Passing
+PASSING_DNA_FEATURES = [
     "pass_attempts_per90",
     "pass_completion_pct",
     "average_pass_length",
@@ -18,8 +19,10 @@ PLAYER_DNA_FEATURES = [
     "switches_per90",
     "through_balls_per90",
     "shot_assists_per90",
+]
 
-    # Possession
+
+POSSESSION_DNA_FEATURES = [
     "carries_per90",
     "total_carry_distance_per90",
     "average_carry_length",
@@ -30,8 +33,10 @@ PLAYER_DNA_FEATURES = [
     "successful_dribbles_per90",
     "dispossessed_per90",
     "miscontrols_per90",
+]
 
-    # Defending
+
+DEFENDING_DNA_FEATURES = [
     "pressures_per90",
     "ball_recoveries_per90",
     "tackles_per90",
@@ -43,18 +48,30 @@ PLAYER_DNA_FEATURES = [
 ]
 
 
+PLAYER_DNA_FEATURES = (
+    PASSING_DNA_FEATURES
+    + POSSESSION_DNA_FEATURES
+    + DEFENDING_DNA_FEATURES
+)
+
+
 def find_similar_players(
     profiles: pd.DataFrame,
     player_name: str,
     min_minutes: float = 180,
     top_n: int = 10,
+    feature_columns: list[str] | None = None,
 ) -> pd.DataFrame:
     """
-    Find players with the most similar passing profiles.
+    Find players with similar statistical profiles.
 
     Players are compared only within the same broad position group.
-    Features are standardized before cosine similarity is calculated.
+    Selected features are standardized before cosine similarity
+    is calculated.
     """
+
+    if feature_columns is None:
+        feature_columns = PLAYER_DNA_FEATURES
 
     candidates = profiles[
         profiles["minutes_played"] >= min_minutes
@@ -80,11 +97,18 @@ def find_similar_players(
 
     candidates = candidates.reset_index(drop=True)
 
+    # IMPORTANT:
+    # Use the features passed to this function,
+    # not PLAYER_DNA_FEATURES directly.
     features = candidates[
-        PLAYER_DNA_FEATURES
+        feature_columns
     ].astype(float)
 
-    # Defensive fallback in case a feature contains missing values.
+    features = features.replace(
+        [np.inf, -np.inf],
+        np.nan,
+    )
+
     features = features.fillna(
         features.median()
     )
@@ -99,9 +123,17 @@ def find_similar_players(
         scaled_features
     )
 
-    target_index = candidates.index[
+    target_matches = candidates.index[
         candidates["player.name"] == player_name
-    ][0]
+    ]
+
+    if len(target_matches) == 0:
+        raise ValueError(
+            f"Player '{player_name}' disappeared "
+            "after position filtering."
+        )
+
+    target_index = target_matches[0]
 
     candidates["similarity"] = (
         similarities[target_index]
