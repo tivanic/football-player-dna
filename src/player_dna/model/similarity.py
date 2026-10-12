@@ -54,6 +54,15 @@ PLAYER_DNA_FEATURES = (
     + DEFENDING_DNA_FEATURES
 )
 
+REDUCED_PLAYER_DNA_FEATURES = [
+    feature
+    for feature in PLAYER_DNA_FEATURES
+    if feature not in {
+        "carries_per90",
+        "successful_tackles_per90",
+    }
+]
+
 
 def find_similar_players(
     profiles: pd.DataFrame,

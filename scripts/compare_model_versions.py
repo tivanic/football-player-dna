@@ -45,8 +45,8 @@ def main() -> None:
         print(f"Features: {len(features)}")
         print("=" * 80)
 
-        print("Feature set:")
-        print(features)
+        # print("Feature set:")
+        # print(features)
         similar = find_similar_players(
             profiles=profiles,
             player_name=PLAYER_NAME,
