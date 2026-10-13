@@ -2,15 +2,44 @@ from __future__ import annotations
 
 import pandas as pd
 
-from player_dna.features.minutes import build_player_minutes
-from player_dna.features.passing import build_passing_features
-from player_dna.features.positions import build_player_positions
+from player_dna.features.minutes import (
+    build_player_minutes,
+)
+
+from player_dna.features.passing import (
+    build_passing_features,
+)
+
+from player_dna.features.positions import (
+    build_player_positions,
+)
+
 from player_dna.features.possession import (
     build_possession_features,
 )
+
 from player_dna.features.defending import (
     build_defending_features,
 )
+
+from player_dna.features.attacking import (
+    build_attacking_features,
+)
+
+from player_dna.features.receiving import (
+    build_receiving_features,
+)
+
+from player_dna.features.spatial import (
+    build_spatial_features,
+)
+
+
+PLAYER_KEYS = [
+    "player.id",
+    "player.name",
+    "team.name",
+]
 
 
 PER_90_COLUMNS = [
@@ -55,102 +84,200 @@ PER_90_COLUMNS = [
     "blocks",
     "dribbled_past",
     "fouls_committed",
+
+    # Attacking
+    "shots",
+    "non_penalty_shots",
+    "non_penalty_shots_in_box",
+    "goals",
+    "non_penalty_goals",
+    "xg",
+    "npxg",
+    "xa",
+
+    # Receiving
+    "final_third_receipts",
+    "box_receipts",
+    "receipts_under_pressure",
 ]
 
 
-def build_player_profile(events: pd.DataFrame) -> pd.DataFrame:
+# Raw values that should be zero when
+# no corresponding action occurred,
+# but that should NOT become per-90 features.
+ZERO_ONLY_COLUMNS = [
+    # Receiving sanity-check value
+    "successful_receipts",
+
+    # Spatial counts / coordinate totals
+    "on_ball_actions",
+    "on_ball_x_sum",
+    "on_ball_y_sum",
+    "on_ball_width_sum",
+
+    "defensive_third_actions",
+    "middle_third_actions",
+    "attacking_third_actions",
+    "wide_actions",
+
+    "spatial_receipts",
+    "receipt_x_sum",
+    "receipt_y_sum",
+    "receipt_width_sum",
+
+    "spatial_defensive_actions",
+    "defensive_x_sum",
+    "defensive_y_sum",
+    "defensive_width_sum",
+]
+
+
+def build_player_profile(
+    events: pd.DataFrame,
+) -> pd.DataFrame:
     """
-    Build a match-level player profile by combining minutes played
-    with passing features and creating per-90 metrics.
+    Build one match-level Player DNA profile.
+
+    Combines:
+    - minutes
+    - positions
+    - passing
+    - possession
+    - defending
+    - attacking
+    - receiving
+    - spatial activity
     """
 
-    minutes = build_player_minutes(events)
-    passing = build_passing_features(events)
-
-    positions = build_player_positions(events)
-
-    possession = build_possession_features(events)
-
-    defending = build_defending_features(events)
-
-    profile = minutes.merge(
-        passing,
-        on=[
-            "player.id",
-            "player.name",
-            "team.name",
-        ],
-        how="left",
+    minutes = build_player_minutes(
+        events
     )
 
-    profile = profile.merge(
-        positions,
-        on=[
-            "player.id",
-            "player.name",
-            "team.name",
-        ],
-        how="left",
+    passing = build_passing_features(
+        events
     )
 
-    profile = profile.merge(
-        possession,
-        on=[
-            "player.id",
-            "player.name",
-            "team.name",
-        ],
-        how="left",
+    positions = build_player_positions(
+        events
     )
 
-    profile = profile.merge(
-        defending,
-        on=[
-            "player.id",
-            "player.name",
-            "team.name",
-        ],
-        how="left",
+    possession = build_possession_features(
+        events
     )
 
-    # Players who did not attempt a pass will have missing
-    # passing values after the merge.
-    # numeric_passing_columns = [
-    #     column
-    #     for column in passing.columns
-    #     if column not in {
-    #         "player.id",
-    #         "player.name",
-    #         "team.name",
-    #     }
-    # ]
-
-    # profile[numeric_passing_columns] = (
-    #     profile[numeric_passing_columns]
-    #     .fillna(0)
-    # )
-    ###
-    ###
-    #!
-    count_columns = [
-        column
-        for column in PER_90_COLUMNS
-        if column in profile.columns
-    ]
-
-    profile[count_columns] = (
-        profile[count_columns]
-        .fillna(0)
+    defending = build_defending_features(
+        events
     )
-    #!
-    
-    ###
+
+    attacking = build_attacking_features(
+        events
+    )
+
+    receiving = build_receiving_features(
+        events
+    )
+
+    spatial = build_spatial_features(
+        events
+    )
+
+    # --------------------------------------------------
+    # Merge feature groups
+    # --------------------------------------------------
+
+    profile = (
+        minutes
+        .merge(
+            passing,
+            on=PLAYER_KEYS,
+            how="left",
+        )
+        .merge(
+            positions,
+            on=PLAYER_KEYS,
+            how="left",
+        )
+        .merge(
+            possession,
+            on=PLAYER_KEYS,
+            how="left",
+        )
+        .merge(
+            defending,
+            on=PLAYER_KEYS,
+            how="left",
+        )
+        .merge(
+            attacking,
+            on=PLAYER_KEYS,
+            how="left",
+        )
+        .merge(
+            receiving,
+            on=PLAYER_KEYS,
+            how="left",
+        )
+        .merge(
+            spatial,
+            on=PLAYER_KEYS,
+            how="left",
+        )
+    )
+
+    # --------------------------------------------------
+    # Missing count / total values
+    # --------------------------------------------------
 
     for column in PER_90_COLUMNS:
-        profile[f"{column}_per90"] = (
-            profile[column]
-            * 90
-            / profile["minutes_played"]
-        )
+        if column not in profile.columns:
+            profile[column] = 0.0
+
+    profile[
+        PER_90_COLUMNS
+    ] = (
+        profile[
+            PER_90_COLUMNS
+        ]
+        .fillna(0.0)
+    )
+
+    for column in ZERO_ONLY_COLUMNS:
+        if column not in profile.columns:
+            profile[column] = 0.0
+
+    profile[
+        ZERO_ONLY_COLUMNS
+    ] = (
+        profile[
+            ZERO_ONLY_COLUMNS
+        ]
+        .fillna(0.0)
+    )
+
+    # --------------------------------------------------
+    # Per-90 features
+    # --------------------------------------------------
+
+    per90_features = pd.DataFrame(
+        {
+            f"{column}_per90": (
+                profile[column]
+                * 90
+                / profile[
+                    "minutes_played"
+                ]
+            )
+            for column in PER_90_COLUMNS
+        },
+        index=profile.index,
+    )
+
+    profile = pd.concat(
+        [
+            profile,
+            per90_features,
+        ],
+        axis=1,
+    )
 
     return profile
