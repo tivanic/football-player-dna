@@ -612,34 +612,66 @@ def aggregate_player_profiles(
     # --------------------------------------------------
     # Per-90 event features
     # --------------------------------------------------
-
-    for column in available_count_columns:
-        profiles[
-            f"{column}_per90"
-        ] = (
-            profiles[column]
-            * 90
-            / profiles[
-                "minutes_played"
+    per90_source_columns = (
+        available_count_columns
+        + [
+            column
+            for column in [
+                "xg",
+                "npxg",
+                "xa",
             ]
-        )
+            if column in profiles.columns
+        ]
+    )
 
-    # Continuous totals requiring per-90
-    for column in [
-        "xg",
-        "npxg",
-        "xa",
-    ]:
-        if column in profiles.columns:
-            profiles[
-                f"{column}_per90"
-            ] = (
+    per90_features = pd.DataFrame(
+        {
+            f"{column}_per90": (
                 profiles[column]
                 * 90
-                / profiles[
-                    "minutes_played"
-                ]
+                / profiles["minutes_played"]
             )
+            for column in per90_source_columns
+        },
+        index=profiles.index,
+    )
+
+    profiles = pd.concat(
+        [
+            profiles,
+            per90_features,
+        ],
+        axis=1,
+    )
+
+    # for column in available_count_columns:
+    #     profiles[
+    #         f"{column}_per90"
+    #     ] = (
+    #         profiles[column]
+    #         * 90
+    #         / profiles[
+    #             "minutes_played"
+    #         ]
+    #     )
+
+    # # Continuous totals requiring per-90
+    # for column in [
+    #     "xg",
+    #     "npxg",
+    #     "xa",
+    # ]:
+    #     if column in profiles.columns:
+    #         profiles[
+    #             f"{column}_per90"
+    #         ] = (
+    #             profiles[column]
+    #             * 90
+    #             / profiles[
+    #                 "minutes_played"
+    #             ]
+    #         )
 
     # --------------------------------------------------
     # Position group
