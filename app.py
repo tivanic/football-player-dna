@@ -386,6 +386,27 @@ render_html(
         margin-top: 0.2rem;
     }
 
+    .role-metric-heading {
+        margin-top: 1.35rem;
+        margin-bottom: 0.55rem;
+
+        color: var(--text);
+
+        font-size: 0.82rem;
+        font-weight: 760;
+
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .role-metric-heading:first-of-type {
+        margin-top: 0.2rem;
+    }
+
+    .role-metrics-grid {
+        margin-bottom: 1.25rem;
+    }
+
     /* ------------------------------------------
        SIMILAR PLAYERS
     ------------------------------------------ */
@@ -565,6 +586,29 @@ TEXT = {
             "Stvarna vrijednost metrike i njen položaj u odnosu "
             "na druge igrače iste uloge."
         ),
+        #!
+        "role_profile": "Profil uloge",
+        "role_profile_note": (
+            "Istaknute metrike prilagođene su ulozi igrača. "
+            "Percentili i dalje opisuju koliko je neka karakteristika izražena "
+            "u odnosu na igrače iste pozicijske grupe."
+        ),
+
+        "defensive_activity": "Obrambena aktivnost",
+        "on_ball_profile": "Igra s loptom",
+
+        "progression_width": "Progresija i igra po širini",
+        "defensive_work": "Obrambeni rad",
+
+        "midfield_control": "Kontrola sredine",
+        "progression_creation": "Progresija i kreacija",
+
+        "creation_progression": "Kreacija i progresija",
+        "threat_receiving": "Prijetnja i primanje lopte",
+
+        "attacking_threat": "Napadačka prijetnja",
+        "link_pressing": "Povezivanje igre i presing",
+        #!
 
         "similar_players": "Najsličniji igrači",
         "similar_note": (
@@ -635,6 +679,29 @@ TEXT = {
             "Actual metric values together with their position "
             "relative to other players in the same role."
         ),
+        #!
+        "role_profile": "Role profile",
+        "role_profile_note": (
+            "Highlighted metrics are tailored to the player's role. "
+            "Percentiles still describe how pronounced each characteristic is "
+            "relative to players in the same position group."
+        ),
+
+        "defensive_activity": "Defensive activity",
+        "on_ball_profile": "On-ball play",
+
+        "progression_width": "Progression & width",
+        "defensive_work": "Defensive work",
+
+        "midfield_control": "Midfield control",
+        "progression_creation": "Progression & creation",
+
+        "creation_progression": "Creation & progression",
+        "threat_receiving": "Threat & receiving",
+
+        "attacking_threat": "Attacking threat",
+        "link_pressing": "Link play & pressing",
+        #!
 
         "similar_players": "Closest style matches",
         "similar_note": (
@@ -900,50 +967,119 @@ DNA_CATEGORIES = {
 # KEY METRICS BY ROLE
 # ============================================================
 
-KEY_METRICS_BY_ROLE = {
+ROLE_PROFILE_SECTIONS = {
     "CB": [
-        "pass_completion_pct",
-        "progressive_passes_per90",
-        "ball_recoveries_per90",
-        "interceptions_per90",
-        "blocks_per90",
-        "average_defensive_x",
+        {
+            "title_key": "defensive_activity",
+            "features": [
+                "ball_recoveries_per90",
+                "interceptions_per90",
+                "blocks_per90",
+                "tackles_per90",
+                "average_defensive_x",
+            ],
+        },
+        {
+            "title_key": "on_ball_profile",
+            "features": [
+                "pass_completion_pct",
+                "progressive_passes_per90",
+                "under_pressure_passes_per90",
+                "average_pass_length",
+            ],
+        },
     ],
 
     "FB": [
-        "progressive_passes_per90",
-        "crosses_per90",
-        "progressive_carries_per90",
-        "xa_per90",
-        "pressures_per90",
-        "final_third_receipts_per90",
+        {
+            "title_key": "progression_width",
+            "features": [
+                "progressive_passes_per90",
+                "progressive_carries_per90",
+                "crosses_per90",
+                "xa_per90",
+                "final_third_receipts_per90",
+            ],
+        },
+        {
+            "title_key": "defensive_work",
+            "features": [
+                "pressures_per90",
+                "ball_recoveries_per90",
+                "tackles_per90",
+                "interceptions_per90",
+                "average_defensive_x",
+            ],
+        },
     ],
 
     "DM_CM": [
-        "pass_attempts_per90",
-        "progressive_passes_per90",
-        "xa_per90",
-        "ball_recoveries_per90",
-        "pressures_per90",
-        "average_on_ball_x",
+        {
+            "title_key": "midfield_control",
+            "features": [
+                "pass_attempts_per90",
+                "pass_completion_pct",
+                "ball_recoveries_per90",
+                "pressures_per90",
+                "average_on_ball_x",
+            ],
+        },
+        {
+            "title_key": "progression_creation",
+            "features": [
+                "progressive_passes_per90",
+                "passes_into_box_per90",
+                "xa_per90",
+                "progressive_carries_per90",
+                "receipts_under_pressure_per90",
+            ],
+        },
     ],
 
     "AM_W": [
-        "xa_per90",
-        "progressive_carries_per90",
-        "dribbles_per90",
-        "passes_into_box_per90",
-        "npxg_per90",
-        "final_third_receipts_per90",
+        {
+            "title_key": "creation_progression",
+            "features": [
+                "xa_per90",
+                "shot_assists_per90",
+                "passes_into_box_per90",
+                "progressive_passes_per90",
+                "progressive_carries_per90",
+            ],
+        },
+        {
+            "title_key": "threat_receiving",
+            "features": [
+                "npxg_per90",
+                "non_penalty_shots_per90",
+                "box_receipts_per90",
+                "final_third_receipts_per90",
+                "dribbles_per90",
+            ],
+        },
     ],
 
     "FW": [
-        "npxg_per90",
-        "non_penalty_shots_per90",
-        "box_receipts_per90",
-        "xa_per90",
-        "pressures_per90",
-        "average_on_ball_x",
+        {
+            "title_key": "attacking_threat",
+            "features": [
+                "npxg_per90",
+                "non_penalty_shots_per90",
+                "non_penalty_shots_in_box_per90",
+                "average_npxg_per_shot",
+                "box_receipts_per90",
+            ],
+        },
+        {
+            "title_key": "link_pressing",
+            "features": [
+                "xa_per90",
+                "progressive_passes_per90",
+                "receipts_under_pressure_per90",
+                "pressures_per90",
+                "pass_attempts_per90",
+            ],
+        },
     ],
 }
 
@@ -1703,8 +1839,8 @@ def format_metric_value(
         f"{value:.2f}"
     )
 
-
-def render_key_metrics(
+#
+def render_role_profile(
     profiles: pd.DataFrame,
     player: pd.Series,
     language: str,
@@ -1719,79 +1855,94 @@ def render_key_metrics(
         role,
     )
 
-    features = (
-        KEY_METRICS_BY_ROLE[
-            role
-        ]
-    )
+    sections = ROLE_PROFILE_SECTIONS[
+        role
+    ]
 
-    cells = []
+    for section in sections:
 
-    for feature in features:
-
-        value = pd.to_numeric(
-            pd.Series(
-                [
-                    player.get(
-                        feature,
-                        np.nan,
-                    )
-                ]
-            ),
-            errors="coerce",
-        ).iloc[0]
-
-        percentile = (
-            feature_percentile(
-                population,
-                feature,
-                value,
-            )
+        section_title = tx(
+            language,
+            section[
+                "title_key"
+            ],
         )
 
-        cells.append(
+        render_html(
             f"""
-            <div class="metric-cell">
-
-                <div class="metric-label">
-                    {escape(
-                        human_feature_name(
-                            feature,
-                            language,
-                        )
-                    )}
-                </div>
-
-                <div class="metric-value">
-                    {escape(
-                        format_metric_value(
-                            feature,
-                            value,
-                        )
-                    )}
-                </div>
-
-                <div class="metric-percentile">
-                    {escape(
-                        percentile_text(
-                            percentile,
-                            language,
-                        )
-                    )}
-                </div>
-
+            <div class="role-metric-heading">
+                {escape(section_title)}
             </div>
             """
         )
 
-    render_html(
-        f"""
-        <div class="metrics-grid">
-            {''.join(cells)}
-        </div>
-        """
-    )
+        cells = []
 
+        for feature in section[
+            "features"
+        ]:
+
+            value = pd.to_numeric(
+                pd.Series(
+                    [
+                        player.get(
+                            feature,
+                            np.nan,
+                        )
+                    ]
+                ),
+                errors="coerce",
+            ).iloc[0]
+
+            percentile = feature_percentile(
+                population,
+                feature,
+                value,
+            )
+
+            cells.append(
+                f"""
+                <div class="metric-cell">
+
+                    <div class="metric-label">
+                        {escape(
+                            human_feature_name(
+                                feature,
+                                language,
+                            )
+                        )}
+                    </div>
+
+                    <div class="metric-value">
+                        {escape(
+                            format_metric_value(
+                                feature,
+                                value,
+                            )
+                        )}
+                    </div>
+
+                    <div class="metric-percentile">
+                        {escape(
+                            percentile_text(
+                                percentile,
+                                language,
+                            )
+                        )}
+                    </div>
+
+                </div>
+                """
+            )
+
+        render_html(
+            f"""
+            <div class="metrics-grid role-metrics-grid">
+                {''.join(cells)}
+            </div>
+            """
+        )
+#
 
 # ============================================================
 # SIMILARITY CONTEXT
@@ -2946,36 +3097,22 @@ with header_left:
 
 with header_right:
 
-    with header_right:
-
-        st.radio(
-            "Language",
-            options=[
-                "HRV",
-                "ENG",
-            ],
-            horizontal=True,
-            label_visibility="collapsed",
-            key="language_selector",
-            on_change=update_language,
-        )
+    st.radio(
+        "Language",
+        options=[
+            "HRV",
+            "ENG",
+        ],
+        horizontal=True,
+        label_visibility="collapsed",
+        key="language_selector",
+        on_change=update_language,
+    )
 
 
-    language = st.session_state[
-        "language"
-    ]
-
-    # language = st.radio(
-    #     "Language",
-    #     options=[
-    #         "HRV",
-    #         "ENG",
-    #     ],
-    #     horizontal=True,
-    #     label_visibility="collapsed",
-    #     key="language",
-    # )
-
+language = st.session_state[
+    "language"
+]
 
 render_html(
     f"""
@@ -3281,14 +3418,14 @@ render_html(
 render_html(
     f"""
     <div class="section-kicker">
-        Context
+        Role context
     </div>
 
     <div class="section-title">
         {escape(
             tx(
                 language,
-                "key_metrics",
+                "role_profile",
             )
         )}
     </div>
@@ -3297,7 +3434,7 @@ render_html(
         {escape(
             tx(
                 language,
-                "key_metrics_note",
+                "role_profile_note",
             )
         )}
     </div>
@@ -3305,7 +3442,7 @@ render_html(
 )
 
 
-render_key_metrics(
+render_role_profile(
     profiles,
     target,
     language,
