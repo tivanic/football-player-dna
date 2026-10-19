@@ -586,7 +586,7 @@ TEXT = {
             "Stvarna vrijednost metrike i njen položaj u odnosu "
             "na druge igrače iste uloge."
         ),
-        #!
+        
         "role_profile": "Profil uloge",
         "role_profile_note": (
             "Istaknute metrike prilagođene su ulozi igrača. "
@@ -608,7 +608,7 @@ TEXT = {
 
         "attacking_threat": "Napadačka prijetnja",
         "link_pressing": "Povezivanje igre i presing",
-        #!
+        
 
         "similar_players": "Najsličniji igrači",
         "similar_note": (
@@ -679,7 +679,7 @@ TEXT = {
             "Actual metric values together with their position "
             "relative to other players in the same role."
         ),
-        #!
+        
         "role_profile": "Role profile",
         "role_profile_note": (
             "Highlighted metrics are tailored to the player's role. "
@@ -701,7 +701,6 @@ TEXT = {
 
         "attacking_threat": "Attacking threat",
         "link_pressing": "Link play & pressing",
-        #!
 
         "similar_players": "Closest style matches",
         "similar_note": (
@@ -3019,14 +3018,13 @@ if (
     ] = st.session_state[
         "language"
     ]
-##
+    
 def update_language() -> None:
     st.session_state[
         "language"
     ] = st.session_state[
         "language_selector"
     ]
-##
 
 if (
     "selected_player_key"
