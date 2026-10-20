@@ -30,6 +30,7 @@ The current public demo uses **Premier League 2015/16 StatsBomb Open Data**.
 
 > Suggested starting point: **Mesut Özil**.
 
+![Player DNA — Mesut Özil profile](assets/player-dna-ozil.png)
 ---
 
 ## Example
