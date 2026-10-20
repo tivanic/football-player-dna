@@ -3006,7 +3006,7 @@ if (
 ):
     st.session_state[
         "language"
-    ] = "HRV"
+    ] = "ENG"
 
 
 if (
@@ -3018,7 +3018,7 @@ if (
     ] = st.session_state[
         "language"
     ]
-    
+
 def update_language() -> None:
     st.session_state[
         "language"

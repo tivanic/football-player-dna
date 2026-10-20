@@ -24,7 +24,7 @@ The interactive Streamlit application allows you to:
 - compare two players directly,
 - inspect the underlying model features.
 
-**Live demo:** coming soon
+Live demo: https://football-player-dna.streamlit.app
 
 The current public demo uses **Premier League 2015/16 StatsBomb Open Data**.
 
@@ -579,7 +579,7 @@ Possible future extensions include:
 
 ## Author
 
-**Tomislav Ivanić**
+Tomislav Ivanić
 
 Software / Computer Vision Engineer
 
@@ -595,7 +595,7 @@ Interests:
 
 ## Status
 
-**Player DNA v1**
+Player DNA v1
 
 The outfield feature set and role-specific similarity models are frozen for the current portfolio release.
 
