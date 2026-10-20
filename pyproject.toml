@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "football-player-dna"
 version = "0.1.0"
-description = "Football player similarity engine using event data, feature engineering, machine learning and learned embeddings."
+description = "Role-aware football player style similarity engine using event data and interpretable feature engineering."
 readme = "README.md"
 requires-python = ">=3.12"
 
